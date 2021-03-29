@@ -3,38 +3,40 @@
 #include <vector>
 
 #define C_SIZE 128
+#define LOG(x) std::cout << x << std::endl
 
 class Trie
 {
 
 public:
     bool isWord;
-    std::string full_word;
     Trie* trieNode[C_SIZE];
 
     Trie()
     {
         this->isWord = false;
 
-        for (int i=0; i < C_SIZE; i++){
+        for (int i=0; i < C_SIZE; i++)
+        {
             this->trieNode[i] = nullptr;
         }
     }
 
     void addWord(std::string);
-    std::string searchTrie(std::string);
+    bool searchTrie(std::string);
     std::vector<std::string> wordsByPrefix(std::string);
     std::vector<std::string> allWordsInTrie();
 
 private:
-    std::vector<std::string> allWordsFromNode(Trie*&);
+    std::vector<std::string> allWordsFromNode(Trie*&, std::string tmp_str);
 };
 
 void Trie::addWord(std::string word)
 {
     Trie* cur = this;
 
-    for(int i=0; i < word.length(); i++){
+    for(int i=0; i < word.length(); i++)
+    {
         if (cur->trieNode[word[i]] == nullptr){
             cur->trieNode[word[i]] = new Trie();
         }
@@ -43,28 +45,29 @@ void Trie::addWord(std::string word)
     }
 
     cur->isWord = true;
-    cur->full_word = word;
 }
 
-std::string Trie::searchTrie(std::string word)
+bool Trie::searchTrie(std::string word)
 {
     Trie* cur = this;
 
-    for(std::string::iterator letter= word.begin(); letter != word.end(); letter++){
-        if (cur->trieNode[*letter] == nullptr){
-            return "Not Found";
+    for(int i=0 ; i < word.length(); i++)
+    {
+        if (cur->trieNode[word[i]] == nullptr){
+            return false;
         }
-
-        cur = cur->trieNode[*letter];
+        cur = cur->trieNode[word[i]];
     }
-    return cur->full_word;
+
+    return cur->isWord;   
 }
 
 std::vector<std::string> Trie::wordsByPrefix(std::string prefix){
     Trie* cur = this;
     std::vector<std::string> words;
 
-    for(int i=0; i< prefix.length(); i++){
+    for(int i=0; i< prefix.length(); i++)
+    {
         if (cur->trieNode[prefix[i]] == nullptr){
             return words;
         }
@@ -72,27 +75,31 @@ std::vector<std::string> Trie::wordsByPrefix(std::string prefix){
         cur = cur->trieNode[prefix[i]];
     } 
 
-    words = allWordsFromNode(cur);
+    words = allWordsFromNode(cur, prefix);
     if (cur->isWord){
-        words.push_back(cur->full_word);
+        words.insert(words.begin(), prefix);
     }
    
     return words;
 }
 
-std::vector<std::string> Trie::allWordsFromNode(Trie*& node)
+std::vector<std::string> Trie::allWordsFromNode(Trie*& node, std::string tmp_str)
 {
     std::vector<std::string> words;
     Trie* cur = node;
 
-    for(int i=0; i < C_SIZE; i++) {
+    for(int i=0; i < C_SIZE; i++) 
+    {
         if (cur->trieNode[i] != nullptr) {
+            tmp_str = tmp_str + (char)i;
+
             if (cur->trieNode[i]->isWord){
-                words.push_back(cur->trieNode[i]->full_word);
+                words.push_back(tmp_str);
             }
 
-            std::vector<std::string> tmp = allWordsFromNode(cur->trieNode[i]);
-            for (int o=0; o < tmp.size(); o++){
+            std::vector<std::string> tmp = allWordsFromNode(cur->trieNode[i], tmp_str);
+            for (int o=0; o < tmp.size(); o++)
+            {
                 words.push_back(tmp[o]);
             }           
         }
@@ -104,7 +111,7 @@ std::vector<std::string> Trie::allWordsFromNode(Trie*& node)
 std::vector<std::string> Trie::allWordsInTrie()
 {
     Trie* cur = this;
-    std::vector<std::string> words = allWordsFromNode(cur);
+    std::vector<std::string> words = allWordsFromNode(cur, "");
 
     return words;
 }
@@ -116,8 +123,9 @@ int main()
 
     std::fstream MyFile("words/words.txt");
     std::string word;
-
-    while (std::getline(MyFile, word)){
+    
+    while (std::getline(MyFile, word))
+    {
         root->addWord(word);
     }
     
@@ -136,7 +144,7 @@ int main()
     }
     
     
-    free(root);
+    delete(root);
 
     return 0;
 
