@@ -1,35 +1,18 @@
 #include <iostream>
-#include <fstream>
 #include <vector>
+#include "trie.hpp"
 
-#define C_SIZE 128
 #define LOG(x) std::cout << x << std::endl
 
-class Trie
+Trie::Trie()
 {
+    this->isWord = false;
 
-public:
-    bool isWord;
-    Trie* trieNode[C_SIZE];
-
-    Trie()
+    for (int i=0; i < CHAR_SIZE; i++)
     {
-        this->isWord = false;
-
-        for (int i=0; i < C_SIZE; i++)
-        {
-            this->trieNode[i] = nullptr;
-        }
+        this->trieNode[i] = nullptr;
     }
-
-    void addWord(std::string);
-    bool searchTrie(std::string);
-    std::vector<std::string> wordsByPrefix(std::string);
-    std::vector<std::string> allWordsInTrie();
-
-private:
-    std::vector<std::string> allWordsFromNode(Trie*&, std::string tmp_str);
-};
+}
 
 void Trie::addWord(std::string word)
 {
@@ -83,21 +66,21 @@ std::vector<std::string> Trie::wordsByPrefix(std::string prefix){
     return words;
 }
 
-std::vector<std::string> Trie::allWordsFromNode(Trie*& node, std::string tmp_str)
+std::vector<std::string> Trie::allWordsFromNode(Trie*& node, std::string prefix)
 {
     std::vector<std::string> words;
     Trie* cur = node;
 
-    for(int i=0; i < C_SIZE; i++) 
+    for(int i=0; i < CHAR_SIZE; i++) 
     {
         if (cur->trieNode[i] != nullptr) {
-            tmp_str = tmp_str + (char)i;
+            std::string curPrefix = prefix + (char)i;
 
             if (cur->trieNode[i]->isWord){
-                words.push_back(tmp_str);
+                words.push_back(curPrefix);
             }
 
-            std::vector<std::string> tmp = allWordsFromNode(cur->trieNode[i], tmp_str);
+            std::vector<std::string> tmp = allWordsFromNode(cur->trieNode[i], curPrefix);
             for (int o=0; o < tmp.size(); o++)
             {
                 words.push_back(tmp[o]);
@@ -114,40 +97,6 @@ std::vector<std::string> Trie::allWordsInTrie()
     std::vector<std::string> words = allWordsFromNode(cur, "");
 
     return words;
-}
-
-int main()
-{
-    
-    Trie* root = new Trie();
-
-    std::fstream MyFile("words/words.txt");
-    std::string word;
-    
-    while (std::getline(MyFile, word))
-    {
-        root->addWord(word);
-    }
-    
-    while (true)
-    {   
-        std::string input;
-        std::cin >> input;
-        
-        std::vector<std::string> words = root->wordsByPrefix(input);
-
-        for (int i=0; i< words.size(); i++)
-        {
-            std::cout << words[i] << std::endl;
-        }
-        
-    }
-    
-    
-    delete(root);
-
-    return 0;
-
 }
 
 
