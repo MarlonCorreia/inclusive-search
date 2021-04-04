@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <set>
 #include <map>
 
 using namespace std;
@@ -9,7 +10,7 @@ class ReversedIndex
 private:
     /* data */
 public:
-    map<int, vector<string>> index;
+    map<string, set<int>> index;
 
     ReversedIndex(/* args */);
     ~ReversedIndex();
