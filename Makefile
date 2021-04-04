@@ -1,8 +1,8 @@
 compile:
-	g++ src/trie.cpp -o bin/trie
+	g++ main.cpp src/trie.cpp -o bin/main
 
 run:
-	./bin/trie
+	./bin/main
 
 clean:
-	rm bin/trie
+	rm bin/main
