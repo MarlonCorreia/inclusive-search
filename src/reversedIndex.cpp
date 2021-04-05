@@ -37,8 +37,8 @@ bool ReversedIndex::isIndexed(string word, int id)
 
 set<int> ReversedIndex::queryIndex(string query)
 {   
+    set<int> ids;
     set<string> words = utils::split(query, " ");
-    set<int> w;
     vector<int> tmp;
 
     for(set<string>::iterator it = words.begin(); it != words.end(); it++)
@@ -48,15 +48,12 @@ set<int> ReversedIndex::queryIndex(string query)
         for(set<int>::iterator it2 = idsByword.begin(); it2 != idsByword.end(); it2++)
         {
             tmp.push_back(*it2);
+
+            if (count(tmp.begin(), tmp.end(), *it2) == words.size()){
+                ids.insert(*it2);
+            }
         }
     }
 
-    for (int i=0; i< tmp.size(); i++)
-    {
-        if (count(tmp.begin(), tmp.end(), tmp[i]) == words.size()){
-            w.insert(tmp[i]);
-        }
-    }
-
-    return w;
+    return ids;
 }
