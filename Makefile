@@ -1,5 +1,5 @@
 compile:
-	g++ main.cpp src/trie.cpp -o bin/main
+	g++ main.cpp src/reversedIndex.cpp src/trie.cpp -o bin/main
 
 run:
 	./bin/main
