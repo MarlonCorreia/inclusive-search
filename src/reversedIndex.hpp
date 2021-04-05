@@ -17,6 +17,6 @@ public:
 
     void addToindex(string, int);
     bool isIndexed(string, int);
-    vector<string> queryIndex(string);
+    set<int> queryIndex(string);
 
 };
