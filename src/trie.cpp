@@ -2,8 +2,6 @@
 #include <vector>
 #include "trie.hpp"
 
-#define LOG(x) std::cout << x << std::endl
-
 Trie::Trie()
 {
     this->isWord = false;
